@@ -1,0 +1,6 @@
+{
+  "name": "GitKraken Client Studio",
+  "description": "GitKraken Client Simulator with interactive Git Graph representation, built-in Merge Conflict Editor, Git-Enhanced Terminal with Auto-Suggest, dark/light themes, staging, local/remote commits, and integrated CI/CD.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
