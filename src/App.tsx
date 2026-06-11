@@ -59,6 +59,7 @@ import GitKrakenPRs from "./components/GitKrakenPRs";
 import GitKrakenJira from "./components/GitKrakenJira";
 import GitKrakenGitLens from "./components/GitKrakenGitLens";
 import GitKrakenWorktrees from "./components/GitKrakenWorktrees";
+import DraggableDashboard from "./components/DraggableDashboard";
 
 // Safely parse JSON from fetch responses
 async function safeJson<T>(res: Response): Promise<T | null> {
@@ -2846,10 +2847,10 @@ export default function App() {
 
             {/* Outer layout wrapper grid containing Tree Sidebar & Main Graph Visualizer panels */}
             {krakenSubTab === "explorer" && (
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-            
-            {/* Sidebar Columns (Left Sidebar: repo selector, branches, stashes, conflict simulate triggers) */}
-            <div className="lg:col-span-4 flex flex-col space-y-6">
+              <DraggableDashboard
+                isLightTheme={isLightTheme}
+                sidebar={
+                  <div className="flex flex-col space-y-6 h-full p-2">
               
               {/* Repo Selector simulated card wrapper */}
               <div className={`p-5 rounded-2xl border ${isLightTheme ? "bg-white border-slate-200 shadow-md" : "bg-slate-900 border-slate-850 shadow-xl"}`}>
@@ -3437,12 +3438,9 @@ export default function App() {
                 </div>
               </div>
             </div>
-
-            {/* Central Dashboard View Area (SVG Graph & Commit details panel) */}
-            <div className="lg:col-span-8 flex flex-col space-y-6">
-              
-              {/* Graph Panel Wrapper */}
-              <div className="flex-1 flex flex-col space-y-4">
+          }
+          graph={
+            <div className="flex-1 flex flex-col space-y-4 h-full p-2">
                 <div className="flex items-center justify-between">
                   <h2 className="font-display font-semibold text-[15px] flex items-center gap-2">
                     <Layers className="h-4 w-4 text-indigo-400" /> Fluxo Visual de Commit Tree Histórica (Interativo)
@@ -3464,12 +3462,9 @@ export default function App() {
                   isLightTheme={isLightTheme}
                 />
               </div>
-
-              {/* Lower Section (Displays active differences / Merge Conflict Panel dynamically) */}
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
-                
-                {/* Files included in selected commit (Lower Left) */}
-                <div className={`md:col-span-4 p-4 rounded-xl border flex flex-col h-full ${isLightTheme ? "bg-white border-slate-200" : "bg-slate-900 border-slate-850"}`}>
+                }
+                properties={
+                  <div className={`p-4 flex flex-col h-full ${isLightTheme ? "bg-white text-slate-800" : "bg-transparent text-slate-200"}`}>
                   <span className="text-[10px] uppercase font-mono tracking-widest text-indigo-400 font-bold block mb-2 border-b pb-2 border-slate-800/60">
                     Propriedades & Ações
                   </span>
@@ -3655,10 +3650,10 @@ export default function App() {
                       Selecione um commit no gráfico acima.
                     </p>
                   )}
-                </div>
-
-                {/* Main Interactive Action Box (Lower Right) */}
-                <div className="md:col-span-8 min-h-[160px]">
+                  </div>
+                }
+                diff={
+                  <div className="h-full w-full">
                   {conflictFile ? (
                     <MergeConflictEditor
                       conflictFile={conflictFile}
@@ -3682,20 +3677,21 @@ export default function App() {
                       </div>
                     </div>
                   )}
-                </div>
-              </div>
-
-              {/* Enhanced Git Terminal */}
-              <TerminalView
+                  </div>
+                }
+                terminal={
+                  <div className="h-full">
+                    <TerminalView
                 logs={terminalLogs}
                 onCommand={handleCommandLineExec}
                 availableBranches={activeSimRepo.branches}
                 activeBranch={activeSimRepo.activeBranch}
-                isLightTheme={isLightTheme}
+                    isLightTheme={isLightTheme}
+                  />
+                  </div>
+                }
               />
-            </div>
-          </div>
-        )}
+            )}
 
         {/* --- Pull Requests Hub view integration --- */}
         {krakenSubTab === "prs" && (
